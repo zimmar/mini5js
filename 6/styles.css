@@ -42,7 +42,7 @@ html, body{
 	background:black;
 	min-height:100%;
 	color:var(--invertColor);
-	transition:color .5s;
+	transition:color 0.2s;
 }
 
 /*-----------------------------------------------*/

@@ -5,3 +5,5 @@
 3. Random Quote Generator
 4. Stop Watch
 5. Todos
+6. Senso (Frontend) 
+
