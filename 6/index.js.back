@@ -1,0 +1,103 @@
+function initialiseGameVariables(){
+
+    arrComputerSequence = [];                                                                       // Array for computer generated sequence
+    arrMySequence = [];                                                                             // Array for my sequence input
+
+    gameRunning = false;                                                                            // Is there a game running in this moment?
+    colorFieldClickable = true;                                                                     // Can I click on fields?
+
+    score = 0;                                                                                      // Start score 0
+    highscore = localStorage.getItem('senso-game-highscore');                                       // Try to get the saved highscore
+    highscore = highscore == null ? 0 : highscore;                                                  // First time programming is running, set highscore to zero. Else set it to the saved value
+
+    gameSpeed = [["Langsam", 500], ["Schnell", 300], ["Sehr schnell", 200]];                        // Decreasing options on how many milliseconds between the blink, and the name of the option
+    numToLightFields = [1, 2, 3, 4, 5];                                                             // Can only be changed in editor.html --> default [0] = 1
+    tone = true;                                                                                    // May the computer make some noise?
+    
+    yellowField = "#yellowField";                                                                   // Define all fields by assigning their ids to variables (main game)
+    redField = "#redField";
+    greenField = "#greenField";
+    blueField = "#blueField";
+
+    allFields = [                                                                                   // Collect all fields in an array, together with their default color, and the frequency of the tone they make
+                    [yellowField, "#ffb90f", 262],                                                  // Must be in same order as field divs!
+                    [redField, "red", 294],                                                         // May be overloaded by editorSpecificFunctions
+                    [greenField, "green", 392], 
+                    [blueField, "blue", 330]
+                ];
+
+    urlSplitUp = (window.location.href).split("/");                                                 // Get current url as array
+    currPage = urlSplitUp[urlSplitUp.length - 1];                                                   // Get current page as string
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+async function clickOnField(clickedField){
+    console.log("clickOnField called with: " + clickedField)                    // Log the clicked field ids
+    field_obj = document.getElementById(clickedField); // Play click sound
+
+    if(!field_obj) {
+        console.error("Field not found: " + clickedField); // Log error if field is not found
+        return; // Exit the function if the field is not found
+    }
+                                               // Clicked field get object 
+    effectsOnField([field_obj], "white");                                                         // Do the effect stuff on this field, with the color white (paint it white, and make a tone)
+    await delay(250);                                                                               // Wait for 250ms                                                                     
+    effectsOnField(allFields, "allColors");                                                         // Reset all fields. Async could mess stuff up, and a field may end white
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+function effectsOnField(arrFields, color){
+    console.log("effectsOnField called with color: " + color);                                      // Log the color of the effect
+    console.log("effectsOnField called with arrFields: " + arrFields);                              // Log the fields that will be effected
+    len = arrFields.length;                                                                         // How many fields will be "effected"
+    for(var i=0; i<len; i++){                                                                       // Loop through all fields
+
+        var fieldObject = arrFields[i];                                                             // Get current fieldObject
+        var fieldDiv = fieldObject[0];                                                              // The actual field
+        var fieldColor = color == "allColors" ? fieldObject[1] : color;                             // Field color. If "allColors" is passed, so are allFields --> Get depending color for the current field
+
+        console.log("effectsOnField: fieldDiv: " + fieldDiv + ", fieldColor: " + fieldColor); // Log the current field and its color
+        if(tone && len == 1){                                                                       // If tone is allowed and len == 1 (only one field, and not all or more)
+            const soundId = fieldDiv.replace('#', '').replace('Field', 'Sound');
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play();
+            }
+        }
+
+        if(currPage != "editor.html"){
+            $(fieldDiv).css("background", fieldColor);                                              // Change background color of current field in main game
+        }
+        else{
+            $(fieldDiv).css("border", "var(--s) solid " + fieldColor);                              // Change border color of current field in editor game
+        }
+    }
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    initialiseGameVariables();
+    const colorFields = document.querySelectorAll('.colorField');
+    colorFields.forEach(field => {
+        field.addEventListener('mousedown', () => {
+            if(colorFieldClickable){
+                clickOnField(field.id);
+            }
+        });
+
+        field.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if(colorFieldClickable){
+                clickOnField('#' + field.id);
+            }
+        });
+    });
+});
