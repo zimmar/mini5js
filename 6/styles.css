@@ -1,0 +1,87 @@
+/* Generelle Variablen */
+:root {
+	--xTimesMargin: 0.05;
+	--dimsMainContainer:calc((2 + var(--xTimesMargin) * 4) * var(--dimsOfColorField));
+	--invertColor:white;
+
+
+	--dimsBtn: calc(100vh / 3); 	/* fall back wert, wenn 3 buttons a 80px nicht mehr auf den bildschirm passen. Wird ansonsten uerberschrieben */
+	--dynamicFontSize: 9vh; 		/* In dem Fall muss auch die font-size der button dynamisch sein. Wird wenns nicht noetig ist auch gleich wieder ueberschrieben */
+}
+
+/* Buttons passen in die y Dimension */
+@media screen and (min-height: 240px) {
+    :root {
+        --dimsBtn: 80px;
+        --dynamicFontSize: 17.5px;
+    }
+}
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/* Bildschirm hoeher als breit */
+@media screen and (min-height: 100vw) {
+	:root {
+		--dimsOfColorField:40vw;
+		--maxSize: 90vw;
+	}
+}
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/* Bildschirm breiter als hoch */
+@media screen and (min-width: 100vh) {
+	:root {
+		--dimsOfColorField:40vh;
+		--maxSize: 90vh;
+	}
+}
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/* Allgemeine Styles */
+html, body{
+	font-family:'Montserrat';
+	background:black;
+	min-height:100%;
+	color:var(--invertColor);
+	transition:color .5s;
+}
+
+/*-----------------------------------------------*/
+
+#colorFields{
+    width:var(--dimsMainContainer);
+    height:var(--dimsMainContainer);
+    margin:auto;
+    margin-top:calc(50vh - var(--dimsMainContainer) * 0.5);
+}
+
+    .colorField{
+        width:var(--dimsOfColorField);
+        height:var(--dimsOfColorField);    
+        border-radius: 100px;
+        margin:calc(var(--xTimesMargin) * var(--dimsOfColorField));
+        cursor:pointer;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+
+        #yellowField{
+            background:#ffb90f;
+            border-top-left-radius: 800px;
+            float:left;
+        }
+        #redField{
+            background:red;
+            border-top-right-radius: 800px;
+            float:right;
+        }
+        #greenField{
+            background:green;
+            border-bottom-left-radius: 800px;
+            float:left;
+        }
+        #blueField{
+            background:blue;
+            border-bottom-right-radius: 800px;
+            float:right;
+        }
+
+/*-----------------------------------------------*/
